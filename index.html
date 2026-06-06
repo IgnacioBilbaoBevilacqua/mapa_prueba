@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#fafafa">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Camioneta C1 — En vivo</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
@@ -17,9 +16,7 @@
       overscroll-behavior: none;
     }
 
-    /* =====================================================
-       LAYOUT BASE — DESKTOP
-       ===================================================== */
+    /* DESKTOP */
     #container {
       display: flex;
       height: 100vh;
@@ -40,156 +37,80 @@
       flex-shrink: 0;
     }
 
-    #map {
-      flex: 1;
-      height: 100%;
-      background: #f5f5f5;
-    }
+    #map { flex: 1; height: 100%; background: #f5f5f5; }
 
-    /* =====================================================
-       HEADER
-       ===================================================== */
     .header h1 {
       font-size: 19px;
       color: #1a1a1a;
       font-weight: 600;
       letter-spacing: -0.3px;
     }
+    .header .subtitle { font-size: 12px; color: #888; margin-top: 2px; }
 
-    .header .subtitle {
-      font-size: 12px;
-      color: #888;
-      margin-top: 2px;
-    }
-
-    /* =====================================================
-       CONEXIÓN
-       ===================================================== */
     .connection {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 14px;
-      background: white;
-      border-radius: 10px;
-      border: 1px solid #ececec;
-      font-size: 13px;
-      color: #555;
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; background: white;
+      border-radius: 10px; border: 1px solid #ececec;
+      font-size: 13px; color: #555;
     }
 
-    .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #ccc;
-      flex-shrink: 0;
-    }
-    .dot.online {
-      background: #1D9E75;
-      box-shadow: 0 0 0 4px rgba(29, 158, 117, 0.2);
-      animation: pulse 2s infinite;
-    }
-    .dot.recent {
-      background: #EF9F27;
-      box-shadow: 0 0 0 4px rgba(239, 159, 39, 0.2);
-    }
-    .dot.offline { background: #D85A30; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
+    .dot.online { background: #16A34A; box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2); animation: pulse 2s infinite; }
+    .dot.recent { background: #F59E0B; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); }
+    .dot.offline { background: #DC2626; }
 
     @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 4px rgba(29, 158, 117, 0.2); }
-      50% { box-shadow: 0 0 0 8px rgba(29, 158, 117, 0); }
+      0%, 100% { box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2); }
+      50% { box-shadow: 0 0 0 8px rgba(22, 163, 74, 0); }
     }
 
-    /* =====================================================
-       CARDS DE DATOS
-       ===================================================== */
     .status-card {
       background: white;
       border-radius: 10px;
       padding: 14px 16px;
       border: 1px solid #ececec;
     }
-
     .status-card .label {
-      font-size: 10px;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 0.7px;
-      margin-bottom: 6px;
-      font-weight: 500;
+      font-size: 10px; color: #888;
+      text-transform: uppercase; letter-spacing: 0.7px;
+      margin-bottom: 6px; font-weight: 500;
     }
-
     .status-card .value {
-      font-size: 24px;
-      font-weight: 600;
-      color: #1a1a1a;
-      line-height: 1.1;
+      font-size: 24px; font-weight: 600;
+      color: #1a1a1a; line-height: 1.1;
     }
-
-    .status-card .unit {
-      font-size: 13px;
-      color: #888;
-      font-weight: 400;
-      margin-left: 4px;
-    }
-
+    .status-card .unit { font-size: 13px; color: #888; font-weight: 400; margin-left: 4px; }
     .status-card .value.small {
-      font-size: 14px;
-      font-weight: 500;
+      font-size: 14px; font-weight: 500;
       font-variant-numeric: tabular-nums;
     }
-
-    .status-row {
-      display: flex;
-      gap: 10px;
-    }
+    .status-row { display: flex; gap: 10px; }
     .status-row .status-card { flex: 1; }
 
-    /* =====================================================
-       BOTONES
-       ===================================================== */
-    .button-row {
-      display: flex;
-      gap: 8px;
-    }
+    .button-row { display: flex; gap: 8px; }
 
     button {
-      width: 100%;
-      padding: 13px;
-      border: none;
-      background: #1a1a1a;
-      color: white;
-      border-radius: 10px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.05s;
+      width: 100%; padding: 13px;
+      border: none; background: #1a1a1a; color: white;
+      border-radius: 10px; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: background 0.15s, transform 0.05s;
       font-family: inherit;
     }
     button:hover { background: #333; }
     button:active { transform: scale(0.98); }
     button.secondary { background: white; color: #1a1a1a; border: 1px solid #ddd; }
     button.secondary:hover { background: #f5f5f5; }
-    button.active { background: #1D9E75; }
-    button.active:hover { background: #168661; }
+    button.active { background: #16A34A; }
+    button.active:hover { background: #15803D; }
     .button-row button { flex: 1; }
 
-    /* =====================================================
-       MARKER DEL AUTO
-       ===================================================== */
+    /* MARKER AUTO */
     .car-marker {
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      border: 4px solid white;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; border: 3px solid white;
       box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-      position: relative;
       transition: background 0.3s, box-shadow 0.3s;
     }
-
     .car-marker.live {
       background: #16A34A;
       box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 10px rgba(22, 163, 74, 0.25);
@@ -203,61 +124,59 @@
       background: #DC2626;
       box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 6px rgba(220, 38, 38, 0.2);
     }
-
     @keyframes live-pulse {
       0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 10px rgba(22, 163, 74, 0.25); }
       50% { box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 20px rgba(22, 163, 74, 0); }
     }
-
     .car-marker svg {
-      width: 24px;
-      height: 24px;
       fill: white;
       filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
     }
 
-    /* =====================================================
-       MOBILE — Bottom sheet estilo Uber
-       ===================================================== */
+    /* MOBILE */
     @media (max-width: 768px) {
       #container { flex-direction: column; }
 
       #map {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 100vh;
-        width: 100vw;
+        top: 0; left: 0; right: 0;
+        height: 100vh; width: 100vw;
       }
 
       #sidebar {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 100%;
-        height: auto;
-        max-height: 70vh;
+        bottom: 0; left: 0; right: 0;
+        width: 100%; height: auto;
+        max-height: 80vh;
         border-right: none;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
-        padding: 8px 16px 24px;
+        padding: 0 16px 24px;
         gap: 10px;
         box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
         transition: transform 0.3s ease-out;
         z-index: 1000;
+        overflow-y: auto;
       }
 
-      /* Handle (barrita arriba del bottom sheet) */
-      #sidebar::before {
+      /* Handle de drag */
+      .drag-handle {
+        position: sticky;
+        top: 0;
+        background: #fafafa;
+        padding: 8px 0 14px;
+        margin: 0 -16px;
+        cursor: grab;
+        z-index: 1;
+      }
+      .drag-handle::before {
         content: '';
         display: block;
         width: 40px;
         height: 4px;
         background: #d0d0d0;
         border-radius: 2px;
-        margin: 8px auto 14px;
+        margin: 0 auto;
       }
 
       #sidebar.collapsed {
@@ -265,33 +184,18 @@
       }
 
       .header h1 { font-size: 17px; }
-      .header .subtitle { font-size: 11px; }
-
       .status-card { padding: 10px 12px; }
       .status-card .value { font-size: 20px; }
-
       .status-row { gap: 8px; }
-
       button { padding: 12px; font-size: 13px; }
-
-      /* Reordenar para mobile: velocidad y conexión primero (siempre visible cuando colapsado) */
-      .header { order: 1; }
-      .connection { order: 2; }
-      .speed-card { order: 3; }
-      .status-row { order: 4; }
-      .alt-card { order: 5; }
-      .time-card { order: 6; }
-      .button-row { order: 7; }
     }
 
-    /* Pantallas muy pequeñas */
     @media (max-width: 380px) {
-      #sidebar { padding: 6px 12px 20px; }
       .status-card { padding: 8px 10px; }
       .status-card .value { font-size: 18px; }
     }
 
-    /* Leaflet controls reposicionados en mobile */
+    /* Controls Leaflet */
     @media (max-width: 768px) {
       .leaflet-control-zoom {
         top: 60px !important;
@@ -300,15 +204,21 @@
       }
       .leaflet-top.leaflet-left { top: 0; left: auto; right: 0; }
     }
+
+    /* En desktop, NO mostrar el handle */
+    @media (min-width: 769px) {
+      .drag-handle { display: none; }
+    }
   </style>
 </head>
 <body>
 
 <div id="container">
-
   <div id="map"></div>
 
   <aside id="sidebar">
+    <div class="drag-handle"></div>
+
     <div class="header">
       <h1>Camioneta C1</h1>
       <div class="subtitle">Seguimiento en tiempo real</div>
@@ -319,7 +229,7 @@
       <span id="conn-text">Conectando...</span>
     </div>
 
-    <div class="status-card speed-card">
+    <div class="status-card">
       <div class="label">Velocidad</div>
       <div class="value"><span id="speed">—</span><span class="unit">km/h</span></div>
     </div>
@@ -335,12 +245,12 @@
       </div>
     </div>
 
-    <div class="status-card alt-card">
+    <div class="status-card">
       <div class="label">Altitud</div>
       <div class="value"><span id="alt">—</span><span class="unit">m</span></div>
     </div>
 
-    <div class="status-card time-card">
+    <div class="status-card">
       <div class="label">Última actualización</div>
       <div class="value small" id="last-update">—</div>
     </div>
@@ -349,34 +259,30 @@
       <button id="follow-btn">Seguir auto</button>
       <button id="center-btn" class="secondary">Centrar</button>
     </div>
-
   </aside>
-
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
   // ============================================
-  // CONFIGURACIÓN — Reemplaza con tu token
+  // CONFIGURACIÓN
   // ============================================
   const FLESPI_TOKEN = 'inlPDL9uDWsawwdfnd8ASzFqWrLRq51AeaO5Qsd0pgiSKWCd8fGUI9Tuk5iIkXKI';
   const DEVICE_ID = 8350798;
-  const REFRESH_MS = 10000;
-  const TRAIL_LENGTH = 30;
+  const REFRESH_MS = 3000;        // consultar cada 3 segundos
+  const ANIMATION_MS = 2800;      // animar entre puntos en 2.8s (un poco menos que refresh)
+  const TRAIL_LENGTH = 80;        // últimos N puntos visibles
 
-  // ============================================
-  // Detección mobile
-  // ============================================
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
 
   // ============================================
-  // Inicialización del mapa
+  // Mapa
   // ============================================
   const map = L.map('map', {
     zoomControl: true,
     attributionControl: false,
     tap: true
-  }).setView([-33.45, -70.65], 13);
+  }).setView([-33.45, -70.65], 14);
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     attribution: '© OSM, © CartoDB',
@@ -385,16 +291,31 @@
 
   L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
 
-  // SVG del auto (icono de coche visto de arriba)
+  // SVG del auto
   const CAR_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>';
 
+  // Tamaño del icono según zoom (escala)
+  function iconSizeForZoom(zoom) {
+    // En zoom 18+ tamaño grande, en zoom <=10 tamaño chico
+    if (zoom >= 17) return 44;
+    if (zoom >= 15) return 38;
+    if (zoom >= 13) return 32;
+    if (zoom >= 11) return 26;
+    return 22;
+  }
+
+  function svgSizeFor(iconSize) {
+    return Math.round(iconSize * 0.55);
+  }
+
   function makeCarIcon(state) {
-    // state: 'live' (verde), 'recent' (amarillo), 'stale' (gris)
+    const size = iconSizeForZoom(map.getZoom());
+    const svgSize = svgSizeFor(size);
     return L.divIcon({
       className: '',
-      html: `<div class="car-marker ${state}">${CAR_SVG}</div>`,
-      iconSize: [40, 40],
-      iconAnchor: [20, 20]
+      html: `<div class="car-marker ${state}" style="width:${size}px;height:${size}px"><svg viewBox="0 0 24 24" style="width:${svgSize}px;height:${svgSize}px;fill:white;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3))"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div>`,
+      iconSize: [size, size],
+      iconAnchor: [size/2, size/2]
     });
   }
 
@@ -404,6 +325,30 @@
   let followMode = true;
   let lastPosition = null;
   let lastDataTimestamp = null;
+  let lastState = 'live';
+
+  // Animación
+  let animFrom = null;
+  let animTo = null;
+  let animStartTime = 0;
+  let animFrameId = null;
+
+  function animateMarker() {
+    if (!animFrom || !animTo || !carMarker) return;
+    const elapsed = performance.now() - animStartTime;
+    const t = Math.min(elapsed / ANIMATION_MS, 1);
+    const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+    const lat = animFrom.lat + (animTo.lat - animFrom.lat) * eased;
+    const lon = animFrom.lon + (animTo.lon - animFrom.lon) * eased;
+    carMarker.setLatLng([lat, lon]);
+    if (followMode) map.panTo([lat, lon], { animate: false });
+    if (t < 1) animFrameId = requestAnimationFrame(animateMarker);
+  }
+
+  // Actualizar tamaño del icono cuando cambia zoom
+  map.on('zoomend', () => {
+    if (carMarker) carMarker.setIcon(makeCarIcon(lastState));
+  });
 
   // ============================================
   // Botones
@@ -431,7 +376,7 @@
 
   centerBtn.addEventListener('click', () => {
     if (lastPosition) {
-      map.setView([lastPosition.lat, lastPosition.lon], 15, { animate: true });
+      map.setView([lastPosition.lat, lastPosition.lon], 16, { animate: true });
     }
   });
 
@@ -445,25 +390,23 @@
   updateFollowButton();
 
   // ============================================
-  // Bottom sheet collapse en mobile
+  // Mobile bottom sheet
   // ============================================
   const sidebar = document.getElementById('sidebar');
-  if (isMobile) {
+  const handle = sidebar.querySelector('.drag-handle');
+
+  if (isMobile && handle) {
     let startY = 0;
-    let currentY = 0;
     let isDragging = false;
 
-    sidebar.addEventListener('touchstart', (e) => {
-      if (e.touches[0].clientY < sidebar.offsetTop + 30) {
-        startY = e.touches[0].clientY;
-        isDragging = true;
-      }
+    handle.addEventListener('touchstart', (e) => {
+      startY = e.touches[0].clientY;
+      isDragging = true;
     });
 
-    sidebar.addEventListener('touchmove', (e) => {
+    handle.addEventListener('touchmove', (e) => {
       if (!isDragging) return;
-      currentY = e.touches[0].clientY;
-      const diff = currentY - startY;
+      const diff = e.touches[0].clientY - startY;
       if (diff > 30) {
         sidebar.classList.add('collapsed');
         isDragging = false;
@@ -473,23 +416,18 @@
       }
     });
 
-    sidebar.addEventListener('touchend', () => { isDragging = false; });
+    handle.addEventListener('touchend', () => { isDragging = false; });
 
-    // Tap en el handle también colapsa/expande
-    sidebar.addEventListener('click', (e) => {
-      if (e.target === sidebar && e.offsetY < 30) {
-        sidebar.classList.toggle('collapsed');
-      }
+    handle.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
     });
   }
 
   // ============================================
-  // Pedir datos a Flespi
+  // Flespi
   // ============================================
   async function fetchPosition() {
     try {
-      // "reverse":true → orden descendente (más recientes primero)
-      // "count":1 → solo el más reciente
       const params = encodeURIComponent(JSON.stringify({ count: 1, reverse: true }));
       const url = `https://flespi.io/gw/devices/${DEVICE_ID}/messages?data=${params}`;
       const res = await fetch(url, {
@@ -497,13 +435,13 @@
       });
 
       if (!res.ok) {
-        setStatus(false, `Error ${res.status}`);
+        updateFreshnessUI('error');
         return;
       }
 
       const json = await res.json();
       if (!json.result || json.result.length === 0) {
-        setStatus(false, 'Sin datos aún');
+        updateFreshnessUI('error');
         return;
       }
 
@@ -515,15 +453,11 @@
       const ts = msg['timestamp'];
 
       if (lat == null || lon == null) {
-        setStatus(false, 'Sin GPS');
+        updateFreshnessUI('stale');
         return;
       }
 
       updatePosition({ lat, lon, speed, alt, ts });
-
-      // Debug: log timestamp para diagnosticar problemas de hora
-      const ageSec = (Date.now() / 1000) - ts;
-      console.log(`[Flespi] timestamp=${ts} (${new Date(ts*1000).toLocaleString()}), edad=${Math.round(ageSec)}s = ${Math.round(ageSec/60)}min = ${Math.round(ageSec/3600)}h`);
 
     } catch (err) {
       console.error(err);
@@ -531,29 +465,26 @@
     }
   }
 
-  // ============================================
-  // Calcular estado de "frescura" del dato
-  // ============================================
   function getFreshness() {
     if (!lastDataTimestamp) return 'unknown';
     const ageSec = (Date.now() / 1000) - lastDataTimestamp;
-    if (ageSec < 60) return 'live';        // <1 min → verde
-    if (ageSec < 300) return 'recent';     // <5 min → amarillo
-    return 'stale';                         // >5 min → gris
+    if (ageSec < 30) return 'live';
+    if (ageSec < 300) return 'recent';
+    return 'stale';
   }
 
   function formatAge(seconds) {
-    // Si el valor es negativo (timestamp del futuro), mostrarlo distinto
-    if (seconds < 0) return `dato adelantado (?)`;
+    if (seconds < 0) return 'ahora';
     if (seconds < 60) return `hace ${Math.round(seconds)}s`;
     if (seconds < 3600) return `hace ${Math.round(seconds/60)} min`;
     if (seconds < 86400) return `hace ${Math.round(seconds/3600)}h`;
-    if (seconds < 604800) return `hace ${Math.round(seconds/86400)} días`;
-    return `hace mucho`;
+    return `hace ${Math.round(seconds/86400)} días`;
   }
 
   function updateFreshnessUI(forceState) {
     const state = forceState || getFreshness();
+    lastState = state === 'error' || state === 'unknown' ? 'stale' : state;
+
     const dot = document.getElementById('conn-dot');
     const txt = document.getElementById('conn-text');
 
@@ -570,52 +501,60 @@
       txt.textContent = `Sin reporte ${formatAge(age)}`;
     } else if (state === 'error') {
       dot.className = 'dot offline';
-      txt.textContent = 'Sin conexión al servidor';
+      txt.textContent = 'Sin conexión';
     } else {
       dot.className = 'dot';
       txt.textContent = 'Cargando...';
     }
 
-    // Actualizar también el icono del auto en el mapa
     if (carMarker && lastPosition && state !== 'error' && state !== 'unknown') {
-      carMarker.setIcon(makeCarIcon(state));
+      carMarker.setIcon(makeCarIcon(lastState));
     }
   }
 
-  // ============================================
-  // Actualizar posición
-  // ============================================
   function updatePosition({ lat, lon, speed, alt, ts }) {
+    const isNewPoint = !lastPosition || lat !== lastPosition.lat || lon !== lastPosition.lon;
+    const prevPos = lastPosition;
+
     lastPosition = { lat, lon };
     lastDataTimestamp = ts;
-
     const freshness = getFreshness();
+    lastState = freshness;
 
     if (!carMarker) {
+      // Primera vez: posicionar y centrar
       carMarker = L.marker([lat, lon], { icon: makeCarIcon(freshness) }).addTo(map);
-      map.setView([lat, lon], 15);
+      map.setView([lat, lon], 16);
+    } else if (isNewPoint && prevPos) {
+      // Nueva posición: animar suavemente
+      if (animFrameId) cancelAnimationFrame(animFrameId);
+      animFrom = prevPos;
+      animTo = { lat, lon };
+      animStartTime = performance.now();
+      animateMarker();
+      carMarker.setIcon(makeCarIcon(freshness));
     } else {
-      carMarker.setLatLng([lat, lon]);
+      // Misma posición: solo actualizar icono por si cambió estado
       carMarker.setIcon(makeCarIcon(freshness));
     }
 
-    trail.push([lat, lon]);
-    if (trail.length > TRAIL_LENGTH) trail.shift();
+    // Trail
+    if (isNewPoint) {
+      trail.push([lat, lon]);
+      if (trail.length > TRAIL_LENGTH) trail.shift();
 
-    if (trailLine) map.removeLayer(trailLine);
-    if (trail.length > 1) {
-      trailLine = L.polyline(trail, {
-        color: '#378ADD',
-        weight: 3,
-        opacity: 0.55,
-        smoothFactor: 1
-      }).addTo(map);
+      if (trailLine) map.removeLayer(trailLine);
+      if (trail.length > 1) {
+        trailLine = L.polyline(trail, {
+          color: '#16A34A',
+          weight: 4,
+          opacity: 0.7,
+          smoothFactor: 1
+        }).addTo(map);
+      }
     }
 
-    if (followMode) {
-      map.panTo([lat, lon], { animate: true, duration: 0.5 });
-    }
-
+    // Sidebar
     document.getElementById('speed').textContent = speed.toFixed(0);
     document.getElementById('lat').textContent = lat.toFixed(5);
     document.getElementById('lon').textContent = lon.toFixed(5);
@@ -635,21 +574,10 @@
   // ============================================
   fetchPosition();
   setInterval(fetchPosition, REFRESH_MS);
+  setInterval(() => { if (lastDataTimestamp) updateFreshnessUI(); }, 15000);
 
-  // Actualizar el indicador de "frescura" cada 15s aunque no llegue dato nuevo
-  // así el texto "hace X min" sigue actualizándose
-  setInterval(() => {
-    if (lastDataTimestamp) updateFreshnessUI();
-  }, 15000);
-
-  // Re-render mapa si cambia orientación (mobile)
-  window.addEventListener('resize', () => {
-    setTimeout(() => map.invalidateSize(), 200);
-  });
-  window.addEventListener('orientationchange', () => {
-    setTimeout(() => map.invalidateSize(), 300);
-  });
-
+  window.addEventListener('resize', () => { setTimeout(() => map.invalidateSize(), 200); });
+  window.addEventListener('orientationchange', () => { setTimeout(() => map.invalidateSize(), 300); });
 </script>
 </body>
 </html>
