@@ -583,15 +583,16 @@
     const prevPos = lastPosition;
 
     // Prioridad para determinar la orientación del auto:
-    // 1. Si el TK816 envía direction válida (no null y >0), usarla
-    // 2. Si no, calcular del movimiento (solo si se está moviendo)
-    // 3. Si está quieto y no hay direction, mantener la última
-    if (direction != null && direction >= 0) {
+    // 1. Si el TK816 envía direction válida y el auto se está moviendo, usarla
+    //    (cuando speed=0, el TK816 envía direction=0 que NO es info real, es default)
+    // 2. Si no, calcular del movimiento (solo si efectivamente cambió de posición)
+    // 3. Si está quieto, mantener la última orientación conocida (no resetear a 0)
+    if (direction != null && direction > 0 && speed > 2) {
       lastBearing = direction;
     } else if (isNewPoint && prevPos && speed > 2) {
       lastBearing = calcBearing(prevPos.lat, prevPos.lon, lat, lon);
     }
-    // Si nada de lo anterior y aún no hay bearing, dejarlo en null (no rotar)
+    // Si nada de lo anterior, lastBearing mantiene su último valor válido
 
     lastPosition = { lat, lon };
     lastDataTimestamp = ts;
