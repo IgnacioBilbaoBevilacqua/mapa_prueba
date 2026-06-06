@@ -512,13 +512,18 @@
       const speed = msg['position.speed'] || 0;
       const alt = msg['position.altitude'] || 0;
       const ts = msg['timestamp'];
+      // direction viene del propio GPS del TK816 (0-360 grados, 0 = norte)
+      const direction = msg['position.direction'];
+
+      // Log para debug
+      console.log(`[Flespi] dir=${direction}° speed=${speed}km/h`);
 
       if (lat == null || lon == null) {
         updateFreshnessUI('stale');
         return;
       }
 
-      updatePosition({ lat, lon, speed, alt, ts });
+      updatePosition({ lat, lon, speed, alt, ts, direction });
 
     } catch (err) {
       console.error(err);
@@ -573,15 +578,20 @@
     }
   }
 
-  function updatePosition({ lat, lon, speed, alt, ts }) {
+  function updatePosition({ lat, lon, speed, alt, ts, direction }) {
     const isNewPoint = !lastPosition || lat !== lastPosition.lat || lon !== lastPosition.lon;
     const prevPos = lastPosition;
 
-    // Calcular bearing (dirección) si hay punto anterior
-    // Solo actualizamos bearing si el auto se está moviendo (>2 km/h) — si está quieto, mantener última orientación
-    if (isNewPoint && prevPos && speed > 2) {
+    // Prioridad para determinar la orientación del auto:
+    // 1. Si el TK816 envía direction válida (no null y >0), usarla
+    // 2. Si no, calcular del movimiento (solo si se está moviendo)
+    // 3. Si está quieto y no hay direction, mantener la última
+    if (direction != null && direction >= 0) {
+      lastBearing = direction;
+    } else if (isNewPoint && prevPos && speed > 2) {
       lastBearing = calcBearing(prevPos.lat, prevPos.lon, lat, lon);
     }
+    // Si nada de lo anterior y aún no hay bearing, dejarlo en null (no rotar)
 
     lastPosition = { lat, lon };
     lastDataTimestamp = ts;
