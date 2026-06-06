@@ -161,16 +161,17 @@
         position: absolute;
         bottom: 0; left: 0; right: 0;
         width: 100%; height: auto;
-        max-height: 80vh;
+        max-height: 75vh;
         border-right: none;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
-        padding: 0 16px 24px;
-        gap: 10px;
+        padding: 0 14px 20px;
+        gap: 8px;
         box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
         transition: transform 0.3s ease-out;
         z-index: 1000;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       /* Handle de drag */
@@ -178,10 +179,10 @@
         position: sticky;
         top: 0;
         background: #fafafa;
-        padding: 8px 0 14px;
-        margin: 0 -16px;
+        padding: 8px 0 10px;
+        margin: 0 -14px 4px;
         cursor: grab;
-        z-index: 1;
+        z-index: 10;
       }
       .drag-handle::before {
         content: '';
@@ -193,15 +194,38 @@
         margin: 0 auto;
       }
 
-      #sidebar.collapsed {
-        transform: translateY(calc(100% - 130px));
+      /* Botones sticky en la parte superior (después del header) */
+      .button-row {
+        position: sticky;
+        top: 42px;
+        background: #fafafa;
+        padding: 8px 0;
+        margin: 0 -14px;
+        padding-left: 14px;
+        padding-right: 14px;
+        z-index: 9;
+        border-bottom: 1px solid #ececec;
       }
 
-      .header h1 { font-size: 17px; }
-      .status-card { padding: 10px 12px; }
-      .status-card .value { font-size: 20px; }
-      .status-row { gap: 8px; }
-      button { padding: 12px; font-size: 13px; }
+      #sidebar.collapsed {
+        transform: translateY(calc(100% - 180px));
+      }
+
+      .header { padding: 4px 0; }
+      .header h1 { font-size: 16px; }
+      .header .subtitle { font-size: 11px; margin-top: 1px; }
+
+      .connection { padding: 8px 12px; font-size: 12px; }
+      .dot { width: 8px; height: 8px; }
+
+      .status-card { padding: 9px 12px; }
+      .status-card .label { font-size: 9px; margin-bottom: 3px; }
+      .status-card .value { font-size: 18px; }
+      .status-card .value.small { font-size: 13px; }
+      .status-card .unit { font-size: 12px; }
+
+      .status-row { gap: 6px; }
+      button { padding: 11px; font-size: 13px; }
     }
 
     @media (max-width: 380px) {
@@ -238,6 +262,11 @@
       <div class="subtitle">Seguimiento en tiempo real</div>
     </div>
 
+    <div class="button-row">
+      <button id="follow-btn">Seguir auto</button>
+      <button id="center-btn" class="secondary">Centrar</button>
+    </div>
+
     <div class="connection">
       <div class="dot" id="conn-dot"></div>
       <span id="conn-text">Conectando...</span>
@@ -267,11 +296,6 @@
     <div class="status-card">
       <div class="label">Última actualización</div>
       <div class="value small" id="last-update">—</div>
-    </div>
-
-    <div class="button-row">
-      <button id="follow-btn">Seguir auto</button>
-      <button id="center-btn" class="secondary">Centrar</button>
     </div>
   </aside>
 </div>
