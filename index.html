@@ -105,32 +105,46 @@
     .button-row button { flex: 1; }
 
     /* MARKER AUTO */
-    .car-marker {
-      display: flex; align-items: center; justify-content: center;
-      border-radius: 50%; border: 3px solid white;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-      transition: background 0.3s, box-shadow 0.3s;
+    .car-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
     }
-    .car-marker.live {
-      background: #16A34A;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 10px rgba(22, 163, 74, 0.25);
+
+    .car-halo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .car-halo.live {
+      background: rgba(22, 163, 74, 0.25);
       animation: live-pulse 2s infinite;
     }
-    .car-marker.recent {
-      background: #F59E0B;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 8px rgba(245, 158, 11, 0.25);
-    }
-    .car-marker.stale {
-      background: #DC2626;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 6px rgba(220, 38, 38, 0.2);
-    }
+    .car-halo.recent { background: rgba(245, 158, 11, 0.25); }
+    .car-halo.stale { background: rgba(220, 38, 38, 0.2); }
+
     @keyframes live-pulse {
-      0%, 100% { box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 10px rgba(22, 163, 74, 0.25); }
-      50% { box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 20px rgba(22, 163, 74, 0); }
+      0%, 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); }
     }
-    .car-marker svg {
-      fill: white;
-      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+
+    .car-body {
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+      transition: transform 0.5s ease-out;
+    }
+    .car-body svg {
+      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     /* MOBILE */
@@ -291,32 +305,78 @@
 
   L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
 
-  // SVG del auto
-  const CAR_SVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>';
+  // SVG del auto visto desde arriba (apunta hacia arriba = norte = 0°)
+  const CAR_SVG = `<svg viewBox="0 0 60 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Cuerpo principal -->
+    <rect x="8" y="14" width="44" height="76" rx="10" ry="8" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
+    <!-- Capó frontal (parte de arriba/adelante) -->
+    <rect x="12" y="10" width="36" height="14" rx="6" ry="6" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
+    <!-- Parabrisas delantero -->
+    <path d="M 14 26 L 46 26 L 44 38 L 16 38 Z" fill="#1e3a5f" opacity="0.85"/>
+    <!-- Techo -->
+    <rect x="14" y="38" width="32" height="28" fill="rgba(0,0,0,0.15)"/>
+    <!-- Parabrisas trasero -->
+    <path d="M 16 66 L 44 66 L 46 78 L 14 78 Z" fill="#1e3a5f" opacity="0.85"/>
+    <!-- Maletero -->
+    <rect x="12" y="80" width="36" height="12" rx="4" ry="4" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
+    <!-- Espejos laterales -->
+    <rect x="4" y="28" width="6" height="5" rx="2" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.6"/>
+    <rect x="50" y="28" width="6" height="5" rx="2" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.6"/>
+    <!-- Línea sombra centro -->
+    <line x1="30" y1="38" x2="30" y2="66" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
+  </svg>`;
 
-  // Tamaño del icono según zoom (escala)
-  function iconSizeForZoom(zoom) {
-    // En zoom 18+ tamaño grande, en zoom <=10 tamaño chico
-    if (zoom >= 17) return 44;
-    if (zoom >= 15) return 38;
-    if (zoom >= 13) return 32;
-    if (zoom >= 11) return 26;
-    return 22;
+  // Tamaño del auto en pixeles según zoom
+  // El mapa muestra menos metros por pixel al alejar, entonces el auto se ve "más chico" naturalmente
+  // si lo escalamos proporcionalmente
+  function carSizeForZoom(zoom) {
+    // Tabla calibrada
+    if (zoom >= 18) return 70;
+    if (zoom >= 17) return 55;
+    if (zoom >= 16) return 42;
+    if (zoom >= 15) return 32;
+    if (zoom >= 14) return 24;
+    if (zoom >= 13) return 18;
+    if (zoom >= 12) return 14;
+    if (zoom >= 11) return 11;
+    return 9;
   }
 
-  function svgSizeFor(iconSize) {
-    return Math.round(iconSize * 0.55);
+  // El halo (círculo de color de estado) escala según el auto
+  function haloSizeForZoom(zoom) {
+    return Math.round(carSizeForZoom(zoom) * 1.6);
   }
 
-  function makeCarIcon(state) {
-    const size = iconSizeForZoom(map.getZoom());
-    const svgSize = svgSizeFor(size);
+  // bearing: ángulo en grados (0 = norte, 90 = este). null = sin rotar
+  function makeCarIcon(state, bearing) {
+    const carSize = carSizeForZoom(map.getZoom());
+    const haloSize = haloSizeForZoom(map.getZoom());
+    const totalSize = haloSize; // el wrapper tiene el tamaño del halo
+
+    const rotation = (bearing != null) ? `transform: rotate(${bearing}deg);` : '';
+
     return L.divIcon({
       className: '',
-      html: `<div class="car-marker ${state}" style="width:${size}px;height:${size}px"><svg viewBox="0 0 24 24" style="width:${svgSize}px;height:${svgSize}px;fill:white;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.3))"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div>`,
-      iconSize: [size, size],
-      iconAnchor: [size/2, size/2]
+      html: `
+        <div class="car-wrapper">
+          <div class="car-halo ${state}" style="width:${haloSize}px;height:${haloSize}px"></div>
+          <div class="car-body" style="width:${carSize * 0.6}px;height:${carSize}px;${rotation}">${CAR_SVG}</div>
+        </div>
+      `,
+      iconSize: [totalSize, totalSize],
+      iconAnchor: [totalSize/2, totalSize/2]
     });
+  }
+
+  // Calcula bearing entre dos puntos (en grados, 0 = norte)
+  function calcBearing(lat1, lon1, lat2, lon2) {
+    const toRad = d => d * Math.PI / 180;
+    const toDeg = r => r * 180 / Math.PI;
+    const dLon = toRad(lon2 - lon1);
+    const y = Math.sin(dLon) * Math.cos(toRad(lat2));
+    const x = Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) -
+              Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(dLon);
+    return (toDeg(Math.atan2(y, x)) + 360) % 360;
   }
 
   let carMarker = null;
@@ -326,6 +386,7 @@
   let lastPosition = null;
   let lastDataTimestamp = null;
   let lastState = 'live';
+  let lastBearing = null; // dirección del auto en grados
 
   // Animación
   let animFrom = null;
@@ -347,7 +408,7 @@
 
   // Actualizar tamaño del icono cuando cambia zoom
   map.on('zoomend', () => {
-    if (carMarker) carMarker.setIcon(makeCarIcon(lastState));
+    if (carMarker) carMarker.setIcon(makeCarIcon(lastState, lastBearing));
   });
 
   // ============================================
@@ -508,13 +569,19 @@
     }
 
     if (carMarker && lastPosition && state !== 'error' && state !== 'unknown') {
-      carMarker.setIcon(makeCarIcon(lastState));
+      carMarker.setIcon(makeCarIcon(lastState, lastBearing));
     }
   }
 
   function updatePosition({ lat, lon, speed, alt, ts }) {
     const isNewPoint = !lastPosition || lat !== lastPosition.lat || lon !== lastPosition.lon;
     const prevPos = lastPosition;
+
+    // Calcular bearing (dirección) si hay punto anterior
+    // Solo actualizamos bearing si el auto se está moviendo (>2 km/h) — si está quieto, mantener última orientación
+    if (isNewPoint && prevPos && speed > 2) {
+      lastBearing = calcBearing(prevPos.lat, prevPos.lon, lat, lon);
+    }
 
     lastPosition = { lat, lon };
     lastDataTimestamp = ts;
@@ -523,7 +590,7 @@
 
     if (!carMarker) {
       // Primera vez: posicionar y centrar
-      carMarker = L.marker([lat, lon], { icon: makeCarIcon(freshness) }).addTo(map);
+      carMarker = L.marker([lat, lon], { icon: makeCarIcon(freshness, lastBearing) }).addTo(map);
       map.setView([lat, lon], 16);
     } else if (isNewPoint && prevPos) {
       // Nueva posición: animar suavemente
@@ -532,10 +599,10 @@
       animTo = { lat, lon };
       animStartTime = performance.now();
       animateMarker();
-      carMarker.setIcon(makeCarIcon(freshness));
+      carMarker.setIcon(makeCarIcon(freshness, lastBearing));
     } else {
       // Misma posición: solo actualizar icono por si cambió estado
-      carMarker.setIcon(makeCarIcon(freshness));
+      carMarker.setIcon(makeCarIcon(freshness, lastBearing));
     }
 
     // Trail
