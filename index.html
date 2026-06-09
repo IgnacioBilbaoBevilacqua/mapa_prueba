@@ -486,7 +486,14 @@
       map.removeLayer(trailLine);
       trailLine = null;
     }
+    clearBtn.style.display = 'none';
   });
+
+  // Mostrar/ocultar botón limpiar según si hay estela
+  function updateClearButton() {
+    clearBtn.style.display = trail.length > 1 ? '' : 'none';
+  }
+  clearBtn.style.display = 'none'; // oculto al inicio
 
   map.on('dragstart', () => {
     if (followMode) {
@@ -660,6 +667,7 @@
           smoothFactor: 1
         }).addTo(map);
       }
+      updateClearButton();
     }
 
     document.getElementById('speed').textContent = speed.toFixed(0);
