@@ -16,7 +16,6 @@
       overscroll-behavior: none;
     }
 
-    /* DESKTOP */
     #container {
       display: flex;
       height: 100vh;
@@ -39,12 +38,7 @@
 
     #map { flex: 1; height: 100%; background: #f5f5f5; }
 
-    .header h1 {
-      font-size: 19px;
-      color: #1a1a1a;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-    }
+    .header h1 { font-size: 19px; color: #1a1a1a; font-weight: 600; letter-spacing: -0.3px; }
     .header .subtitle { font-size: 12px; color: #888; margin-top: 2px; }
 
     .connection {
@@ -58,6 +52,7 @@
     .dot.online { background: #16A34A; box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2); animation: pulse 2s infinite; }
     .dot.recent { background: #F59E0B; box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2); }
     .dot.offline { background: #DC2626; }
+    .dot.sleeping { background: #6366F1; }
 
     @keyframes pulse {
       0%, 100% { box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.2); }
@@ -65,25 +60,17 @@
     }
 
     .status-card {
-      background: white;
-      border-radius: 10px;
-      padding: 14px 16px;
-      border: 1px solid #ececec;
+      background: white; border-radius: 10px;
+      padding: 14px 16px; border: 1px solid #ececec;
     }
     .status-card .label {
       font-size: 10px; color: #888;
       text-transform: uppercase; letter-spacing: 0.7px;
       margin-bottom: 6px; font-weight: 500;
     }
-    .status-card .value {
-      font-size: 24px; font-weight: 600;
-      color: #1a1a1a; line-height: 1.1;
-    }
+    .status-card .value { font-size: 24px; font-weight: 600; color: #1a1a1a; line-height: 1.1; }
     .status-card .unit { font-size: 13px; color: #888; font-weight: 400; margin-left: 4px; }
-    .status-card .value.small {
-      font-size: 14px; font-weight: 500;
-      font-variant-numeric: tabular-nums;
-    }
+    .status-card .value.small { font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; }
     .status-row { display: flex; gap: 10px; }
     .status-row .status-card { flex: 1; }
 
@@ -102,31 +89,22 @@
     button.secondary:hover { background: #f5f5f5; }
     button.active { background: #16A34A; }
     button.active:hover { background: #15803D; }
+    button.danger { background: white; color: #DC2626; border: 1px solid #FECACA; }
+    button.danger:hover { background: #FEF2F2; }
     .button-row button { flex: 1; }
 
     /* MARKER AUTO */
     .car-wrapper {
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; height: 100%;
     }
-
     .car-halo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
+      position: absolute; top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
+      border-radius: 50%; pointer-events: none; z-index: 0;
     }
-    .car-halo.live {
-      background: rgba(22, 163, 74, 0.25);
-      animation: live-pulse 2s infinite;
-    }
+    .car-halo.live { background: rgba(22, 163, 74, 0.25); animation: live-pulse 2s infinite; }
     .car-halo.recent { background: rgba(245, 158, 11, 0.25); }
     .car-halo.stale { background: rgba(220, 38, 38, 0.2); }
 
@@ -136,16 +114,36 @@
     }
 
     .car-body {
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
       filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
       transition: transform 0.5s ease-out;
     }
-    .car-body svg {
-      display: block;
-      width: 100%;
-      height: 100%;
+    .car-body svg { display: block; width: 100%; height: 100%; }
+
+    /* Fuera de horario: overlay */
+    #offhours-overlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(250, 250, 250, 0.85);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
     }
+    #offhours-overlay.visible { display: flex; }
+    .offhours-content {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+    .offhours-icon { font-size: 48px; margin-bottom: 12px; }
+    .offhours-title { font-size: 18px; font-weight: 600; color: #1a1a1a; margin-bottom: 8px; }
+    .offhours-text { font-size: 14px; color: #666; line-height: 1.5; }
+    .offhours-schedule { font-size: 13px; color: #888; margin-top: 12px; font-weight: 500; }
 
     /* MOBILE */
     @media (max-width: 768px) {
@@ -154,8 +152,7 @@
       #map {
         position: absolute;
         top: 0; left: 0; right: 0;
-        height: 100vh;
-        height: 100dvh; /* dynamic viewport - respeta barras de Safari */
+        height: 100vh; height: 100dvh;
         width: 100vw;
       }
 
@@ -163,12 +160,10 @@
         position: absolute;
         bottom: 0; left: 0; right: 0;
         width: 100%; height: auto;
-        max-height: 75vh;
-        max-height: 75dvh;
+        max-height: 75vh; max-height: 75dvh;
         border-right: none;
         border-top-left-radius: 20px;
         border-top-right-radius: 20px;
-        /* Padding inferior + safe-area-inset para no quedar bajo el home indicator */
         padding: 0 14px calc(20px + env(safe-area-inset-bottom));
         gap: 8px;
         box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
@@ -178,56 +173,40 @@
         -webkit-overflow-scrolling: touch;
       }
 
-      /* Handle de drag */
       .drag-handle {
-        position: sticky;
-        top: 0;
+        position: sticky; top: 0;
         background: #fafafa;
         padding: 8px 0 10px;
         margin: 0 -14px 4px;
-        cursor: grab;
-        z-index: 10;
+        cursor: grab; z-index: 10;
       }
       .drag-handle::before {
         content: '';
-        display: block;
-        width: 40px;
-        height: 4px;
-        background: #d0d0d0;
-        border-radius: 2px;
-        margin: 0 auto;
+        display: block; width: 40px; height: 4px;
+        background: #d0d0d0; border-radius: 2px; margin: 0 auto;
       }
 
-      /* Botones sticky en la parte superior (después del header) */
       .button-row {
-        position: sticky;
-        top: 42px;
+        position: sticky; top: 42px;
         background: #fafafa;
-        padding: 8px 0;
-        margin: 0 -14px;
-        padding-left: 14px;
-        padding-right: 14px;
+        padding: 8px 0; margin: 0 -14px;
+        padding-left: 14px; padding-right: 14px;
         z-index: 9;
         border-bottom: 1px solid #ececec;
       }
 
-      #sidebar.collapsed {
-        transform: translateY(calc(100% - 180px));
-      }
+      #sidebar.collapsed { transform: translateY(calc(100% - 180px)); }
 
       .header { padding: 4px 0; }
       .header h1 { font-size: 16px; }
       .header .subtitle { font-size: 11px; margin-top: 1px; }
-
       .connection { padding: 8px 12px; font-size: 12px; }
       .dot { width: 8px; height: 8px; }
-
       .status-card { padding: 9px 12px; }
       .status-card .label { font-size: 9px; margin-bottom: 3px; }
       .status-card .value { font-size: 18px; }
       .status-card .value.small { font-size: 13px; }
       .status-card .unit { font-size: 12px; }
-
       .status-row { gap: 6px; }
       button { padding: 11px; font-size: 13px; }
     }
@@ -237,7 +216,6 @@
       .status-card .value { font-size: 18px; }
     }
 
-    /* Controls Leaflet */
     @media (max-width: 768px) {
       .leaflet-control-zoom {
         top: 60px !important;
@@ -247,7 +225,6 @@
       .leaflet-top.leaflet-left { top: 0; left: auto; right: 0; }
     }
 
-    /* En desktop, NO mostrar el handle */
     @media (min-width: 769px) {
       .drag-handle { display: none; }
     }
@@ -257,6 +234,16 @@
 
 <div id="container">
   <div id="map"></div>
+
+  <!-- Overlay fuera de horario -->
+  <div id="offhours-overlay">
+    <div class="offhours-content">
+      <div class="offhours-icon">🌙</div>
+      <div class="offhours-title">Fuera de horario laboral</div>
+      <div class="offhours-text">El seguimiento en tiempo real está disponible solo durante la jornada laboral.</div>
+      <div class="offhours-schedule">Lunes a Domingo · 08:00 — 18:30 hrs</div>
+    </div>
+  </div>
 
   <aside id="sidebar">
     <div class="drag-handle"></div>
@@ -269,6 +256,7 @@
     <div class="button-row">
       <button id="follow-btn">Seguir auto</button>
       <button id="center-btn" class="secondary">Centrar</button>
+      <button id="clear-btn" class="danger">Limpiar</button>
     </div>
 
     <div class="connection">
@@ -311,11 +299,51 @@
   // ============================================
   const FLESPI_TOKEN = 'inlPDL9uDWsawwdfnd8ASzFqWrLRq51AeaO5Qsd0pgiSKWCd8fGUI9Tuk5iIkXKI';
   const DEVICE_ID = 8350798;
-  const REFRESH_MS = 3000;        // consultar cada 3 segundos
-  const ANIMATION_MS = 2800;      // animar entre puntos en 2.8s (un poco menos que refresh)
-  const TRAIL_LENGTH = 80;        // últimos N puntos visibles
+  const REFRESH_MS = 3000;
+  const ANIMATION_MS = 2800;
+  const TRAIL_LENGTH = 30;
+
+  // Horario laboral (hora local Santiago, Chile)
+  const WORK_START_HOUR = 8;    // 08:00
+  const WORK_START_MIN = 0;
+  const WORK_END_HOUR = 18;     // 18:30
+  const WORK_END_MIN = 30;
 
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+  // ============================================
+  // Horario laboral
+  // ============================================
+  function isWorkingHours() {
+    // Usar hora local del navegador (debe estar en zona Chile)
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const totalMin = h * 60 + m;
+    const startMin = WORK_START_HOUR * 60 + WORK_START_MIN;
+    const endMin = WORK_END_HOUR * 60 + WORK_END_MIN;
+    return totalMin >= startMin && totalMin <= endMin;
+  }
+
+  function isDataWithinWorkingHours(timestamp) {
+    // Verifica si el timestamp del dato GPS cae dentro del horario laboral
+    const date = new Date(timestamp * 1000);
+    const h = date.getHours();
+    const m = date.getMinutes();
+    const totalMin = h * 60 + m;
+    const startMin = WORK_START_HOUR * 60 + WORK_START_MIN;
+    const endMin = WORK_END_HOUR * 60 + WORK_END_MIN;
+    return totalMin >= startMin && totalMin <= endMin;
+  }
+
+  function updateOffhoursOverlay() {
+    const overlay = document.getElementById('offhours-overlay');
+    if (!isWorkingHours()) {
+      overlay.classList.add('visible');
+    } else {
+      overlay.classList.remove('visible');
+    }
+  }
 
   // ============================================
   // Mapa
@@ -333,32 +361,20 @@
 
   L.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
 
-  // SVG del auto visto desde arriba (apunta hacia arriba = norte = 0°)
+  // SVG del auto
   const CAR_SVG = `<svg viewBox="0 0 60 100" xmlns="http://www.w3.org/2000/svg">
-    <!-- Cuerpo principal -->
     <rect x="8" y="14" width="44" height="76" rx="10" ry="8" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
-    <!-- Capó frontal (parte de arriba/adelante) -->
     <rect x="12" y="10" width="36" height="14" rx="6" ry="6" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
-    <!-- Parabrisas delantero -->
     <path d="M 14 26 L 46 26 L 44 38 L 16 38 Z" fill="#1e3a5f" opacity="0.85"/>
-    <!-- Techo -->
     <rect x="14" y="38" width="32" height="28" fill="rgba(0,0,0,0.15)"/>
-    <!-- Parabrisas trasero -->
     <path d="M 16 66 L 44 66 L 46 78 L 14 78 Z" fill="#1e3a5f" opacity="0.85"/>
-    <!-- Maletero -->
     <rect x="12" y="80" width="36" height="12" rx="4" ry="4" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.8"/>
-    <!-- Espejos laterales -->
     <rect x="4" y="28" width="6" height="5" rx="2" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.6"/>
     <rect x="50" y="28" width="6" height="5" rx="2" fill="white" stroke="rgba(0,0,0,0.3)" stroke-width="0.6"/>
-    <!-- Línea sombra centro -->
     <line x1="30" y1="38" x2="30" y2="66" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
   </svg>`;
 
-  // Tamaño del auto en pixeles según zoom
-  // El mapa muestra menos metros por pixel al alejar, entonces el auto se ve "más chico" naturalmente
-  // si lo escalamos proporcionalmente
   function carSizeForZoom(zoom) {
-    // Tabla calibrada
     if (zoom >= 18) return 70;
     if (zoom >= 17) return 55;
     if (zoom >= 16) return 42;
@@ -370,19 +386,15 @@
     return 9;
   }
 
-  // El halo (círculo de color de estado) escala según el auto
   function haloSizeForZoom(zoom) {
     return Math.round(carSizeForZoom(zoom) * 1.6);
   }
 
-  // bearing: ángulo en grados (0 = norte, 90 = este). null = sin rotar
   function makeCarIcon(state, bearing) {
     const carSize = carSizeForZoom(map.getZoom());
     const haloSize = haloSizeForZoom(map.getZoom());
-    const totalSize = haloSize; // el wrapper tiene el tamaño del halo
-
+    const totalSize = haloSize;
     const rotation = (bearing != null) ? `transform: rotate(${bearing}deg);` : '';
-
     return L.divIcon({
       className: '',
       html: `
@@ -396,7 +408,6 @@
     });
   }
 
-  // Calcula bearing entre dos puntos (en grados, 0 = norte)
   function calcBearing(lat1, lon1, lat2, lon2) {
     const toRad = d => d * Math.PI / 180;
     const toDeg = r => r * 180 / Math.PI;
@@ -414,9 +425,8 @@
   let lastPosition = null;
   let lastDataTimestamp = null;
   let lastState = 'live';
-  let lastBearing = null; // dirección del auto en grados
+  let lastBearing = null;
 
-  // Animación
   let animFrom = null;
   let animTo = null;
   let animStartTime = 0;
@@ -426,7 +436,7 @@
     if (!animFrom || !animTo || !carMarker) return;
     const elapsed = performance.now() - animStartTime;
     const t = Math.min(elapsed / ANIMATION_MS, 1);
-    const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+    const eased = 1 - Math.pow(1 - t, 3);
     const lat = animFrom.lat + (animTo.lat - animFrom.lat) * eased;
     const lon = animFrom.lon + (animTo.lon - animFrom.lon) * eased;
     carMarker.setLatLng([lat, lon]);
@@ -434,7 +444,6 @@
     if (t < 1) animFrameId = requestAnimationFrame(animateMarker);
   }
 
-  // Actualizar tamaño del icono cuando cambia zoom
   map.on('zoomend', () => {
     if (carMarker) carMarker.setIcon(makeCarIcon(lastState, lastBearing));
   });
@@ -444,6 +453,7 @@
   // ============================================
   const followBtn = document.getElementById('follow-btn');
   const centerBtn = document.getElementById('center-btn');
+  const clearBtn = document.getElementById('clear-btn');
 
   function updateFollowButton() {
     if (followMode) {
@@ -466,6 +476,15 @@
   centerBtn.addEventListener('click', () => {
     if (lastPosition) {
       map.setView([lastPosition.lat, lastPosition.lon], 16, { animate: true });
+    }
+  });
+
+  // Botón limpiar estela
+  clearBtn.addEventListener('click', () => {
+    trail = [];
+    if (trailLine) {
+      map.removeLayer(trailLine);
+      trailLine = null;
     }
   });
 
@@ -496,26 +515,25 @@
     handle.addEventListener('touchmove', (e) => {
       if (!isDragging) return;
       const diff = e.touches[0].clientY - startY;
-      if (diff > 30) {
-        sidebar.classList.add('collapsed');
-        isDragging = false;
-      } else if (diff < -30) {
-        sidebar.classList.remove('collapsed');
-        isDragging = false;
-      }
+      if (diff > 30) { sidebar.classList.add('collapsed'); isDragging = false; }
+      else if (diff < -30) { sidebar.classList.remove('collapsed'); isDragging = false; }
     });
 
     handle.addEventListener('touchend', () => { isDragging = false; });
-
-    handle.addEventListener('click', () => {
-      sidebar.classList.toggle('collapsed');
-    });
+    handle.addEventListener('click', () => { sidebar.classList.toggle('collapsed'); });
   }
 
   // ============================================
   // Flespi
   // ============================================
   async function fetchPosition() {
+    // Verificar horario laboral
+    if (!isWorkingHours()) {
+      updateOffhoursOverlay();
+      return;
+    }
+    updateOffhoursOverlay();
+
     try {
       const params = encodeURIComponent(JSON.stringify({ count: 1, reverse: true }));
       const url = `https://flespi.io/gw/devices/${DEVICE_ID}/messages?data=${params}`;
@@ -523,16 +541,10 @@
         headers: { 'Authorization': `FlespiToken ${FLESPI_TOKEN}` }
       });
 
-      if (!res.ok) {
-        updateFreshnessUI('error');
-        return;
-      }
+      if (!res.ok) { updateFreshnessUI('error'); return; }
 
       const json = await res.json();
-      if (!json.result || json.result.length === 0) {
-        updateFreshnessUI('error');
-        return;
-      }
+      if (!json.result || json.result.length === 0) { updateFreshnessUI('error'); return; }
 
       const msg = json.result[0];
       const lat = msg['position.latitude'];
@@ -540,13 +552,12 @@
       const speed = msg['position.speed'] || 0;
       const alt = msg['position.altitude'] || 0;
       const ts = msg['timestamp'];
-      // direction viene del propio GPS del TK816 (0-360 grados, 0 = norte)
       const direction = msg['position.direction'];
 
-      // Log para debug
-      console.log(`[Flespi] dir=${direction}° speed=${speed}km/h`);
+      if (lat == null || lon == null) { updateFreshnessUI('stale'); return; }
 
-      if (lat == null || lon == null) {
+      // Solo mostrar datos que fueron generados dentro del horario laboral
+      if (!isDataWithinWorkingHours(ts)) {
         updateFreshnessUI('stale');
         return;
       }
@@ -590,9 +601,9 @@
       dot.className = 'dot recent';
       txt.textContent = `Reportó ${formatAge(age)}`;
     } else if (state === 'stale') {
-      const age = (Date.now() / 1000) - lastDataTimestamp;
+      const age = lastDataTimestamp ? (Date.now() / 1000) - lastDataTimestamp : 0;
       dot.className = 'dot offline';
-      txt.textContent = `Sin reporte ${formatAge(age)}`;
+      txt.textContent = lastDataTimestamp ? `Sin reporte ${formatAge(age)}` : 'Sin datos';
     } else if (state === 'error') {
       dot.className = 'dot offline';
       txt.textContent = 'Sin conexión';
@@ -610,17 +621,11 @@
     const isNewPoint = !lastPosition || lat !== lastPosition.lat || lon !== lastPosition.lon;
     const prevPos = lastPosition;
 
-    // Prioridad para determinar la orientación del auto:
-    // 1. Si el TK816 envía direction válida y el auto se está moviendo, usarla
-    //    (cuando speed=0, el TK816 envía direction=0 que NO es info real, es default)
-    // 2. Si no, calcular del movimiento (solo si efectivamente cambió de posición)
-    // 3. Si está quieto, mantener la última orientación conocida (no resetear a 0)
     if (direction != null && direction > 0 && speed > 2) {
       lastBearing = direction;
     } else if (isNewPoint && prevPos && speed > 2) {
       lastBearing = calcBearing(prevPos.lat, prevPos.lon, lat, lon);
     }
-    // Si nada de lo anterior, lastBearing mantiene su último valor válido
 
     lastPosition = { lat, lon };
     lastDataTimestamp = ts;
@@ -628,11 +633,9 @@
     lastState = freshness;
 
     if (!carMarker) {
-      // Primera vez: posicionar y centrar
       carMarker = L.marker([lat, lon], { icon: makeCarIcon(freshness, lastBearing) }).addTo(map);
       map.setView([lat, lon], 16);
     } else if (isNewPoint && prevPos) {
-      // Nueva posición: animar suavemente
       if (animFrameId) cancelAnimationFrame(animFrameId);
       animFrom = prevPos;
       animTo = { lat, lon };
@@ -640,11 +643,10 @@
       animateMarker();
       carMarker.setIcon(makeCarIcon(freshness, lastBearing));
     } else {
-      // Misma posición: solo actualizar icono por si cambió estado
       carMarker.setIcon(makeCarIcon(freshness, lastBearing));
     }
 
-    // Trail
+    // Trail con máximo 30 puntos
     if (isNewPoint) {
       trail.push([lat, lon]);
       if (trail.length > TRAIL_LENGTH) trail.shift();
@@ -660,7 +662,6 @@
       }
     }
 
-    // Sidebar
     document.getElementById('speed').textContent = speed.toFixed(0);
     document.getElementById('lat').textContent = lat.toFixed(5);
     document.getElementById('lon').textContent = lon.toFixed(5);
@@ -678,9 +679,13 @@
   // ============================================
   // Iniciar
   // ============================================
+  updateOffhoursOverlay();
   fetchPosition();
   setInterval(fetchPosition, REFRESH_MS);
-  setInterval(() => { if (lastDataTimestamp) updateFreshnessUI(); }, 15000);
+  setInterval(() => {
+    updateOffhoursOverlay();
+    if (lastDataTimestamp) updateFreshnessUI();
+  }, 15000);
 
   window.addEventListener('resize', () => { setTimeout(() => map.invalidateSize(), 200); });
   window.addEventListener('orientationchange', () => { setTimeout(() => map.invalidateSize(), 300); });
