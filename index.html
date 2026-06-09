@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#fafafa">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Camioneta C1 — En vivo</title>
+  <title>Don Raúl — En vivo</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -249,7 +249,7 @@
     <div class="drag-handle"></div>
 
     <div class="header">
-      <h1>Camioneta C1</h1>
+      <h1>Don Raúl</h1>
       <div class="subtitle">Seguimiento en tiempo real</div>
     </div>
 
@@ -390,21 +390,46 @@
     return Math.round(carSizeForZoom(zoom) * 1.6);
   }
 
+  // Nombre del auto (se muestra arriba del icono en el mapa)
+  const CAR_NAME = 'Don Raúl';
+
   function makeCarIcon(state, bearing) {
     const carSize = carSizeForZoom(map.getZoom());
     const haloSize = haloSizeForZoom(map.getZoom());
     const totalSize = haloSize;
     const rotation = (bearing != null) ? `transform: rotate(${bearing}deg);` : '';
+
+    // Tamaño del texto según zoom (se achica al alejar)
+    const fontSize = Math.max(9, Math.round(carSize * 0.35));
+    // Solo mostrar nombre en zoom >= 13 (si no, queda muy chico y estorba)
+    const showName = map.getZoom() >= 13;
+
     return L.divIcon({
       className: '',
       html: `
-        <div class="car-wrapper">
-          <div class="car-halo ${state}" style="width:${haloSize}px;height:${haloSize}px"></div>
-          <div class="car-body" style="width:${carSize * 0.6}px;height:${carSize}px;${rotation}">${CAR_SVG}</div>
+        <div style="position:relative;display:flex;flex-direction:column;align-items:center;">
+          ${showName ? `<div style="
+            background:white;
+            color:#1a1a1a;
+            font-family:-apple-system,sans-serif;
+            font-size:${fontSize}px;
+            font-weight:600;
+            padding:2px 6px;
+            border-radius:4px;
+            box-shadow:0 1px 4px rgba(0,0,0,0.25);
+            white-space:nowrap;
+            margin-bottom:2px;
+            line-height:1.2;
+            pointer-events:none;
+          ">${CAR_NAME}</div>` : ''}
+          <div class="car-wrapper" style="width:${totalSize}px;height:${totalSize}px;">
+            <div class="car-halo ${state}" style="width:${haloSize}px;height:${haloSize}px"></div>
+            <div class="car-body" style="width:${carSize * 0.6}px;height:${carSize}px;${rotation}">${CAR_SVG}</div>
+          </div>
         </div>
       `,
-      iconSize: [totalSize, totalSize],
-      iconAnchor: [totalSize/2, totalSize/2]
+      iconSize: [totalSize + 40, totalSize + (showName ? fontSize + 10 : 0)],
+      iconAnchor: [(totalSize + 40)/2, (showName ? fontSize + 10 : 0) + totalSize/2]
     });
   }
 
